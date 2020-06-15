@@ -33,7 +33,7 @@ class RequestInfo:
 
     def _format_json(self, content):
         try:
-            return json.dumps(json.loads(self.request.body), indent=2, sort_keys=True)
+            return json.dumps(json.loads(content), indent=2, sort_keys=True)
         except Exception:
             # ignore JSON parse exceptions and return unparsed body instead
             pass
