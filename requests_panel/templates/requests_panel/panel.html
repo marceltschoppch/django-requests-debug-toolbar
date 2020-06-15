@@ -1,0 +1,43 @@
+<h4>{{ _("HTTP Requests") }}</h4>
+<dl>
+    {% for request in requests %}
+        <dt>
+            {{ request.request.method|upper }}
+            {{ request.request.url }}
+        </dt>
+        <dd>Status: {{ request.response.headers.status|default:request.response.status_code }}</dd>
+        <dd>Elapsed: {{ request.response.elapsed.total_seconds }} {{ _("seconds") }}</dd>
+        <dd>
+            <details>
+                <summary>{{ _("Request Headers") }}</summary>
+                <code class="djTemplateContext">{{ request.request_headers }}</code>
+            </details>
+        </dd>
+        <dd>
+            <details>
+                <summary>{{ _("Request Body") }} ({{ request.request.body|length|filesizeformat }})</summary>
+                <code class="djTemplateContext">{{ request.request_body|default:"&nbsp;" }}</code>
+            </details>
+        </dd>
+        <dd>
+            <details>
+                <summary>{{ _("Response Headers") }}</summary>
+                <code class="djTemplateContext">{{ request.response_headers }}</code>
+            </details>
+        </dd>
+        <dd>
+            <details>
+                <summary>{{ _("Response Content") }} ({{ request.response.content|length|filesizeformat }})</summary>
+                <code class="djTemplateContext">{{ request.response_content }}</code>
+            </details>
+        </dd>
+        {% if request.stacktrace %}
+            <dd>
+                <details>
+                    <summary>{{ _("Stacktrace") }}</summary>
+                    <pre class="djdt-stack">{{ request.stacktrace }}</pre>
+                </details>
+            </dd>
+        {% endif %}
+    {% endfor %}
+</dl>
