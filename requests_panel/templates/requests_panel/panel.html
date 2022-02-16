@@ -6,7 +6,7 @@
             {{ request.request.url }}
         </dt>
         <dd>Status: {{ request.response.headers.status|default:request.response.status_code }}</dd>
-        <dd>Elapsed: {{ request.response.elapsed.total_seconds }} {{ _("seconds") }}</dd>
+        <dd>Elapsed: {{ request.response.elapsed.total_seconds }} seconds</dd>
         <dd>
             <details>
                 <summary>{{ _("Request Headers") }}</summary>

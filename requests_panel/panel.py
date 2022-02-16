@@ -6,7 +6,7 @@ from debug_toolbar.panels import Panel
 from debug_toolbar.utils import get_stack, render_stacktrace, ThreadCollector, tidy_stacktrace
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _, ngettext
-from requests import sessions
+import requests
 
 
 collector = ThreadCollector()
@@ -59,7 +59,7 @@ class RequestInfo:
         return self.response.content
 
 
-class PatchedSession(sessions.Session):
+class PatchedSession(requests.Session):
     """
     A patched requests `Session` class that collects all requests and responses.
     """
@@ -70,7 +70,7 @@ class PatchedSession(sessions.Session):
         return response
 
 
-sessions.Session = PatchedSession
+requests.Session = PatchedSession
 
 
 class RequestsDebugPanel(Panel):
@@ -89,9 +89,7 @@ class RequestsDebugPanel(Panel):
 
     @property
     def nav_subtitle(self):
-        return ngettext('%(count)s request', '%(count)s requests', self._local.request_count) % {
-            'count': self._local.request_count,
-        }
+        return "{} requests {:.2f}ms".format(self._local.request_count, self._local.total_elapsed_ms)
 
     def process_request(self, request):
         collector.clear_collection()
@@ -101,6 +99,7 @@ class RequestsDebugPanel(Panel):
         requests = collector.get_collection()
         collector.clear_collection()
         self._local.request_count = len(requests)
+        self._local.total_elapsed_ms = sum([r.response.elapsed.total_seconds() for r in requests]) * 1000
         self.record_stats({
             'requests': requests,
         })
