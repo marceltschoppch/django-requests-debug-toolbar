@@ -1,5 +1,5 @@
 django-http-requests-debug-toolbar
-=============================
+==================================
 
 A `Django Debug Toolbar <https://django-debug-toolbar.readthedocs.io/>`_ panel for Requests
 
