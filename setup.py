@@ -12,7 +12,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 version = __import__('requests_panel').__version__
 
 setup(
-    name='django-requests-debug-toolbar',
+    name='django-http-requests-debug-toolbar',
     version=version,
     packages=find_packages(),
     include_package_data=True,
@@ -23,9 +23,9 @@ setup(
     description='A Django Debug Toolbar panel for Requests',
     keywords='django django-debug-toolbar requests debug toolbar',
     long_description=README,
-    url='https://github.com/marceltschoppch/django-requests-debug-toolbar',
-    author='Marcel Tschopp',
-    author_email='info@marceltschopp.ch',
+    url='',
+    author='Alexey Mokeev, Marcel Tschopp',
+    author_email='mokeev@group-ib.com',
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
