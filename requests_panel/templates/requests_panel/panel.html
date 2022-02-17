@@ -1,43 +1,72 @@
-<h4>{{ _("HTTP Requests") }}</h4>
+{% load static %}
+
+<h4>HTTP Requests</h4>
 <dl>
     {% for request in requests %}
         <dt>
             {{ request.request.method|upper }}
             {{ request.request.url }}
+            {{ request.response.headers.status|default:request.response.status_code }}
         </dt>
-        <dd>Status: {{ request.response.headers.status|default:request.response.status_code }}</dd>
-        <dd>Elapsed: {{ request.response.elapsed.total_seconds }} {{ _("seconds") }}</dd>
+        <dd>Elapsed: {{ request.response.elapsed.total_seconds }} seconds</dd>
         <dd>
-            <details>
-                <summary>{{ _("Request Headers") }}</summary>
-                <code class="djTemplateContext">{{ request.request_headers }}</code>
-            </details>
+            <div class="djTemplateShowContextDiv">
+                <a class="requests_show_content">
+                    <span class="toggleArrow">▶</span> Request Headers ({{ request.request.headers|length|filesizeformat }})
+                </a>
+                <a class="selectText" style="display: none;"> -&gt; (Select All Json for ctrl + c)</a>
+            </div>
+            <div class="djTemplateHideContextDiv" style="display: none;">
+                <code class="json_code" contenteditable="true" >{{ request.request_headers }}</code>
+            </div>
         </dd>
         <dd>
-            <details>
-                <summary>{{ _("Request Body") }} ({{ request.request.body|length|filesizeformat }})</summary>
-                <code class="djTemplateContext">{{ request.request_body|default:"&nbsp;" }}</code>
-            </details>
+            <div class="djTemplateShowContextDiv">
+                <a class="requests_show_content">
+                    <span class="toggleArrow">▶</span> Request Body ({{ request.request.body|length|filesizeformat }})
+                </a>
+                <a class="selectText" style="display: none;"> -&gt; (Select All Json for ctrl + c)</a>
+            </div>
+            <div class="djTemplateHideContextDiv" style="display: none;">
+                <code class="json_code" contenteditable="true" >{{ request.request_body|default:"&nbsp;" }}</code>
+            </div>
         </dd>
         <dd>
-            <details>
-                <summary>{{ _("Response Headers") }}</summary>
-                <code class="djTemplateContext">{{ request.response_headers }}</code>
-            </details>
+            <div class="djTemplateShowContextDiv">
+                <a class="requests_show_content">
+                    <span class="toggleArrow">▶</span> Response Headers ({{ request.response.headers|length|filesizeformat }})
+                </a>
+                <a class="selectText" style="display: none;"> -&gt; (Select All Json for ctrl + c)</a>
+            </div>
+            <div class="djTemplateHideContextDiv" style="display: none;">
+                <code class="json_code" contenteditable="true" >{{ request.response_headers }}</code>
+            </div>
         </dd>
         <dd>
-            <details>
-                <summary>{{ _("Response Content") }} ({{ request.response.content|length|filesizeformat }})</summary>
-                <code class="djTemplateContext">{{ request.response_content }}</code>
-            </details>
+            <div class="djTemplateShowContextDiv">
+                <a class="requests_show_content">
+                    <span class="toggleArrow">▶</span> Response Body ({{ request.response.content|length|filesizeformat }})
+                </a>
+                <a class="selectText" style="display: none;"> -&gt; (Select All Json for ctrl + c)</a>
+            </div>
+            <div class="djTemplateHideContextDiv" style="display: none;">
+                <code class="json_code" contenteditable="true" >{{ request.response_content|default:"&nbsp;" }}</code>
+            </div>
         </dd>
         {% if request.stacktrace %}
             <dd>
-                <details>
-                    <summary>{{ _("Stacktrace") }}</summary>
+                <div class="djTemplateShowContextDiv">
+                    <a class="requests_show_content">
+                        <span class="toggleArrow">▶</span> Stacktrace
+                    </a>
+                    <a class="selectText" style="display: none;"> -&gt; (Select All Json for ctrl + c)</a>
+                </div>
+                <div class="djTemplateHideContextDiv" style="display: none;">
                     <pre class="djdt-stack">{{ request.stacktrace }}</pre>
-                </details>
+                </div>
             </dd>
         {% endif %}
     {% endfor %}
 </dl>
+
+<script src="{% static 'requests_panel/js/panel.js' %}"></script>

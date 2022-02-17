@@ -1,4 +1,4 @@
-django-requests-debug-toolbar
+django-http-requests-debug-toolbar
 =============================
 
 A `Django Debug Toolbar <https://django-debug-toolbar.readthedocs.io/>`_ panel for Requests
@@ -15,7 +15,7 @@ Usage
 
 #. Install using pip::
 
-    pip install django-requests-debug-toolbar
+    pip install django-http-requests-debug-toolbar
 
 #. Add ``requests_panel`` to your ``INSTALLED_APPS`` setting.
 #. Add ``requests_panel.panel.RequestsDebugPanel`` to your ``DEBUG_TOOLBAR_PANELS``.
