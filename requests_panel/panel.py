@@ -71,6 +71,7 @@ class PatchedSession(requests.Session):
 
 
 requests.Session = PatchedSession
+requests.sessions.Session = PatchedSession
 
 
 class RequestsDebugPanel(Panel):
