@@ -42,7 +42,7 @@ class RequestInfo:
     @cached_property
     def request_body(self):
         if self.request.body:
-            if self.request.headers['content-type'] == 'application/json':
+            if self.request.headers.get('content-type') == 'application/json':
                 return self._format_json(self.request.body)
         return self.request.body
 
@@ -54,7 +54,7 @@ class RequestInfo:
     @cached_property
     def response_content(self):
         if self.response.content:
-            if self.response.headers['content-type'] == 'application/json':
+            if self.response.get('content-type') == 'application/json':
                 return self._format_json(self.response.content)
         return self.response.content
 
