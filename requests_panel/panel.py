@@ -1,3 +1,4 @@
+import cgi
 import json
 import threading
 
@@ -43,8 +44,13 @@ class RequestInfo:
     @cached_property
     def request_body(self):
         if self.request.body:
-            if self.request.headers['content-type'] == 'application/json':
-                return self._format_json(self.request.body)
+            content_type = self.request.headers.get('content-type')
+            if content_type:
+                content_type, params = cgi.parse_header(content_type)
+                if content_type == 'application/json':
+                    return self._format_json(self.request.body)
+                if isinstance(self.request.body, bytes) and params.get('charset'):
+                    return self.request.body.decode(params['charset'])
         return self.request.body
 
     @cached_property
@@ -57,6 +63,8 @@ class RequestInfo:
         if self.response.content:
             if self.response.headers['content-type'] == 'application/json':
                 return self._format_json(self.response.content)
+            if isinstance(self.response.content, bytes):
+                return self.response.content.decode(self.response.encoding)
         return self.response.content
 
 
