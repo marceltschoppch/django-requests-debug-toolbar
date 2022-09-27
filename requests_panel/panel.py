@@ -6,7 +6,8 @@ from debug_toolbar.panels import Panel
 from debug_toolbar.utils import get_stack, render_stacktrace, ThreadCollector, tidy_stacktrace
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _, ngettext
-from requests import sessions
+import requests
+import requests.sessions
 
 
 collector = ThreadCollector()
@@ -59,7 +60,7 @@ class RequestInfo:
         return self.response.content
 
 
-class PatchedSession(sessions.Session):
+class PatchedSession(requests.sessions.Session):
     """
     A patched requests `Session` class that collects all requests and responses.
     """
@@ -70,7 +71,8 @@ class PatchedSession(sessions.Session):
         return response
 
 
-sessions.Session = PatchedSession
+requests.Session = PatchedSession
+requests.sessions.Session = PatchedSession
 
 
 class RequestsDebugPanel(Panel):
