@@ -96,6 +96,7 @@ class RequestsDebugPanel(Panel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._local = threading.local()
+        self._local.request_count = 0
 
     @property
     def nav_subtitle(self):
