@@ -99,8 +99,9 @@ class RequestsDebugPanel(Panel):
 
     @property
     def nav_subtitle(self):
-        return ngettext('%(count)s request', '%(count)s requests', self._local.request_count) % {
-            'count': self._local.request_count,
+        request_count = getattr(self._local, 'request_count', 0)
+        return ngettext('%(count)s request', '%(count)s requests', request_count) % {
+            'count': request_count,
         }
 
     def process_request(self, request):
