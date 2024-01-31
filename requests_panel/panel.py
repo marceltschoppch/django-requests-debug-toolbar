@@ -50,13 +50,19 @@ class RequestInfo:
             pass
         return content
 
+    def _is_json(self, content_type):
+        if not content_type:
+            return False
+        media_type, sub = content_type.split('/', 1)
+        return media_type == 'application' and sub.split('+').pop() == 'json'
+
     @cached_property
     def request_body(self):
         if self.request.body:
             content_type = self.request.headers.get('content-type')
             if content_type:
                 content_type, params = cgi.parse_header(content_type)
-                if content_type == 'application/json':
+                if self._is_json(content_type):
                     return self._format_json(self.request.body)
                 if isinstance(self.request.body, bytes) and params.get('charset'):
                     return self.request.body.decode(params['charset'])
@@ -72,11 +78,10 @@ class RequestInfo:
         if self.response.content:
             if self.response.headers.get('content-type'):
                 content_type, params = cgi.parse_header(self.response.headers['content-type'])
-                if content_type == 'application/json':
+                if self._is_json(content_type):
                     return self._format_json(self.response.content)
-            if isinstance(self.response.content, bytes):
-                return self.response.content.decode(self.response.encoding)
-        return self.response.content
+            return self.response.text
+        return self.response.text
 
 
 class PatchedSession(requests.sessions.Session):
