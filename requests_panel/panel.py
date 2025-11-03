@@ -1,4 +1,3 @@
-import cgi
 import contextlib
 import json
 import threading
@@ -8,6 +7,7 @@ from debug_toolbar import settings as dt_settings
 from debug_toolbar.panels import Panel
 from debug_toolbar.utils import get_stack, render_stacktrace, tidy_stacktrace
 from django.utils.functional import cached_property
+from django.utils.http import parse_header_parameters
 from django.utils.translation import gettext_lazy as _, ngettext
 import requests
 import requests.sessions
@@ -61,7 +61,7 @@ class RequestInfo:
         if self.request.body:
             content_type = self.request.headers.get('content-type')
             if content_type:
-                content_type, params = cgi.parse_header(content_type)
+                content_type, params = parse_header_parameters(content_type)
                 if self._is_json(content_type):
                     return self._format_json(self.request.body)
                 if isinstance(self.request.body, bytes) and params.get('charset'):
@@ -77,7 +77,7 @@ class RequestInfo:
     def response_content(self):
         if self.response.content:
             if self.response.headers.get('content-type'):
-                content_type, params = cgi.parse_header(self.response.headers['content-type'])
+                content_type, params = parse_header_parameters(self.response.headers['content-type'])
                 if self._is_json(content_type):
                     return self._format_json(self.response.content)
             return self.response.text
