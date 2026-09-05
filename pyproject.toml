@@ -1,0 +1,71 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "django-requests-debug-toolbar"
+dynamic = ["version"]
+description = "A Django Debug Toolbar panel that lists HTTP requests made with the requests library"
+readme = "README.rst"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [{ name = "Marcel Tschopp", email = "info@marceltschopp.ch" }]
+keywords = ["django", "django-debug-toolbar", "requests", "debug", "toolbar"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Web Environment",
+  "Framework :: Django",
+  "Framework :: Django :: 5.2",
+  "Framework :: Django :: 6.0",
+  "Framework :: Django :: 6.1",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Software Development :: Debuggers",
+]
+dependencies = [
+  "Django>=5.2",
+  "django-debug-toolbar>=6.0",
+  "requests",
+]
+
+[project.urls]
+Homepage = "https://github.com/marceltschoppch/django-requests-debug-toolbar"
+Changelog = "https://github.com/marceltschoppch/django-requests-debug-toolbar/blob/master/CHANGELOG.rst"
+Issues = "https://github.com/marceltschoppch/django-requests-debug-toolbar/issues"
+
+[tool.hatch.version]
+path = "requests_panel/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["requests_panel"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "requests_panel",
+  "CHANGELOG.rst",
+  "LICENSE",
+  "README.rst",
+  "pyproject.toml",
+]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 119
+
+[tool.ruff.lint]
+select = ["B", "C4", "DJ", "E", "F", "I", "UP", "W"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["requests_panel"]
+
+[tool.ruff.format]
+quote-style = "single"

@@ -1,43 +1,71 @@
-<h4>{{ _("HTTP Requests") }}</h4>
+{% load i18n %}
+<h4>{% translate "HTTP Requests" %}</h4>
+{% if not requests %}
+  <p>{% translate "No HTTP requests were made with the requests library during this request." %}</p>
+{% else %}
 <dl>
-    {% for request in requests %}
-        <dt>
-            {{ request.request.method|upper }}
-            {{ request.request.url }}
-        </dt>
-        <dd>Status: {{ request.response.headers.status|default:request.response.status_code }}</dd>
-        <dd>Elapsed: {{ request.response.elapsed.total_seconds }} {{ _("seconds") }}</dd>
-        <dd>
-            <details>
-                <summary>{{ _("Request Headers") }}</summary>
-                <code class="djTemplateContext">{{ request.request_headers }}</code>
-            </details>
-        </dd>
-        <dd>
-            <details>
-                <summary>{{ _("Request Body") }} ({{ request.request.body|length|filesizeformat }})</summary>
-                <code class="djTemplateContext">{{ request.request_body|default:"&nbsp;" }}</code>
-            </details>
-        </dd>
-        <dd>
-            <details>
-                <summary>{{ _("Response Headers") }}</summary>
-                <code class="djTemplateContext">{{ request.response_headers }}</code>
-            </details>
-        </dd>
-        <dd>
-            <details>
-                <summary>{{ _("Response Content") }} ({{ request.response.content|length|filesizeformat }})</summary>
-                <code class="djTemplateContext">{{ request.response_content }}</code>
-            </details>
-        </dd>
-        {% if request.stacktrace %}
-            <dd>
-                <details>
-                    <summary>{{ _("Stacktrace") }}</summary>
-                    <pre class="djdt-stack">{{ request.stacktrace }}</pre>
-                </details>
-            </dd>
+  {% for call in requests %}
+    <dt><strong>{{ call.method }}</strong> {{ call.url }}</dt>
+    <dd>{% translate "Status:" %} {{ call.status_code }} {{ call.reason }}</dd>
+    <dd>{% blocktranslate with elapsed=call.elapsed|floatformat:3 %}Elapsed: {{ elapsed }} seconds{% endblocktranslate %}</dd>
+    {% if call.redirects %}
+      <dd>
+        {% translate "Redirects:" %}
+        <ul>
+          {% for hop in call.redirects %}
+            <li>{{ hop.status_code }} {{ hop.method }} {{ hop.url }}</li>
+          {% endfor %}
+        </ul>
+      </dd>
+    {% endif %}
+    <dd>
+      <details>
+        <summary>{% translate "Request Headers" %}</summary>
+        <table>
+          <tbody>
+            {% for name, value in call.request_headers %}
+              <tr><th>{{ name }}</th><td>{{ value }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </details>
+    </dd>
+    <dd>
+      <details>
+        <summary>{% translate "Request Body" %}{% if call.request_body_size is not None %} ({{ call.request_body_size|filesizeformat }}){% endif %}</summary>
+        <pre class="djTemplateContext">{{ call.request_body }}</pre>
+      </details>
+    </dd>
+    <dd>
+      <details>
+        <summary>{% translate "Response Headers" %}</summary>
+        <table>
+          <tbody>
+            {% for name, value in call.response_headers %}
+              <tr><th>{{ name }}</th><td>{{ value }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </details>
+    </dd>
+    <dd>
+      <details>
+        <summary>{% translate "Response Content" %}{% if call.response_size is not None %} ({{ call.response_size|filesizeformat }}){% endif %}</summary>
+        {% if call.response_content is None %}
+          <em>{% translate "Streaming response, content not captured." %}</em>
+        {% else %}
+          <pre class="djTemplateContext">{{ call.response_content }}</pre>
         {% endif %}
-    {% endfor %}
+      </details>
+    </dd>
+    {% if call.stacktrace %}
+      <dd>
+        <details>
+          <summary>{% translate "Stacktrace" %}</summary>
+          <pre class="djdt-stack">{{ call.stacktrace|safe }}</pre>
+        </details>
+      </dd>
+    {% endif %}
+  {% endfor %}
 </dl>
+{% endif %}
